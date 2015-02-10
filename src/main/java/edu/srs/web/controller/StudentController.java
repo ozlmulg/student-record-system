@@ -2,10 +2,9 @@ package edu.srs.web.controller;
 
 import edu.srs.dao.Student;
 import edu.srs.dao.StudentJDBCTemplate;
-import edu.srs.config.StudentConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,8 +25,16 @@ public class StudentController extends WebMvcConfigurerAdapter {
     @Autowired
     StudentJDBCTemplate studentJDBCTemplate;
 
+    //Log4j
+    private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
+
     @RequestMapping(value = "/addStudent", method = RequestMethod.GET)
     public String addStudentView(Model model) {//USAGE= http://localhost:8080/addStudents
+        //logs debug message
+        if(logger.isDebugEnabled()){
+            logger.debug("addStudent is executed!");
+        }
+
         model.addAttribute("student", new Student());
         return "addStudent";
     }
@@ -42,6 +49,8 @@ public class StudentController extends WebMvcConfigurerAdapter {
             studentJDBCTemplate.addStudent(student.getName(), student.getSurname(), student.getId(), student.getGrade());
             model.addAttribute("message", "The student record is successfully added.");
         } catch (Exception ex) {
+            //logs exception
+            logger.error("This is Error message", new Exception("ExistingStudentId"));
             model.addAttribute("message", "There is already a student with id=" + student.getId());
         }
         return "info";
@@ -57,6 +66,8 @@ public class StudentController extends WebMvcConfigurerAdapter {
             model.addAttribute("grade", student.getGrade());
             return "getStudent";
         } catch (Exception ex) {
+            //logs exception
+            logger.error("This is Error message", new Exception("NoSuchStudent"));
             model.addAttribute("message", "No such student found with id=" + id);
             return "info";
         }
@@ -89,6 +100,9 @@ public class StudentController extends WebMvcConfigurerAdapter {
         model.addObject("title", "Spring Security Hello World");
         model.addObject("message", "This is protected page - Admin Page!");
         model.setViewName("admin");
+
+        //logs info
+        logger.info("admin is connected..");
 
         return model;
 
