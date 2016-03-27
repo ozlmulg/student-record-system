@@ -29,7 +29,7 @@ public class StudentController extends WebMvcConfigurerAdapter {
     private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
 
     @RequestMapping(value = "/addStudent", method = RequestMethod.GET)
-    public String addStudentView(Model model) {//USAGE= http://localhost:8080/addStudents
+    public String addStudentView(Model model) {//USAGE= http://localhost:8080/addStudent
         //logs debug message
         if(logger.isDebugEnabled()){
             logger.debug("addStudent is executed!");
@@ -50,7 +50,7 @@ public class StudentController extends WebMvcConfigurerAdapter {
             model.addAttribute("message", "The student record is successfully added.");
         } catch (Exception ex) {
             //logs exception
-            logger.error("This is Error message", new Exception("ExistingStudentId"));
+            logger.error("This is Error message", ex);
             model.addAttribute("message", "There is already a student with id=" + student.getId());
         }
         return "info";
@@ -67,7 +67,7 @@ public class StudentController extends WebMvcConfigurerAdapter {
             return "getStudent";
         } catch (Exception ex) {
             //logs exception
-            logger.error("This is Error message", new Exception("NoSuchStudent"));
+            logger.error("This is Error message", ex);
             model.addAttribute("message", "No such student found with id=" + id);
             return "info";
         }
